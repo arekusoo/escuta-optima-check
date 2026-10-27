@@ -4,7 +4,7 @@
  * que fica no navegador de quem respondeu (o mesmo código aparece se a pessoa reenviar).
  */
 const ABA = 'Respostas';
-const ORDEM = ["funcao", "projetos", "ferramentas", "aparelho", "revisita", "precisou", "onde", "historia", "top3", "falta", "desconforto", "frequencia", "acesso", "mudanca"];
+const ORDEM = ["funcao", "projetos", "ferramentas", "aparelho", "revisita", "precisou", "onde", "historia", "top3", "falta", "desconforto", "frequencia", "painel_olha", "painel_uso", "acesso", "mudanca"];
 const COLUNAS = {
   "funcao": "area",
   "projetos": "projetos_semana",
@@ -18,6 +18,8 @@ const COLUNAS = {
   "falta": "faltou_na_lista",
   "desconforto": "desconforto",
   "frequencia": "frequencia_painel",
+  "painel_olha": "painel_olharia_primeiro",
+  "painel_uso": "painel_usaria_para",
   "acesso": "onde_acessar",
   "mudanca": "mudaria"
 };
@@ -157,6 +159,7 @@ const PERGUNTAS = {
       "ranking": "Comparação ou ranking entre pessoas",
       "alerta-atraso": "Aviso para a gestão quando eu atrasar o check-in",
       "publico": "Meu check-in visível para todo o time",
+      "pontualidade": "Ver a minha pontualidade de check-in registrada",
       "nenhum": "Nenhuma destas"
     }
   },
@@ -171,6 +174,33 @@ const PERGUNTAS = {
       "mensal": "Uma vez por mês",
       "quando": "Só quando precisar",
       "nunca": "Não abriria"
+    }
+  },
+  "painel_olha": {
+    "tipo": "multi",
+    "obrig": true,
+    "max": 2,
+    "nenhum": "nao-usaria",
+    "opcoes": {
+      "horas-meta": "Minhas horas por dia comparadas com as 8h",
+      "por-projeto": "Quanto do meu tempo vai para cada projeto",
+      "pontualidade": "Se enviei o check-in no prazo",
+      "status": "Status e riscos dos meus projetos",
+      "registro-dia": "O que registrei em cada dia",
+      "nao-usaria": "Não usaria um painel"
+    }
+  },
+  "painel_uso": {
+    "tipo": "multi",
+    "obrig": true,
+    "max": 2,
+    "nenhum": "sem-uso",
+    "opcoes": {
+      "conferir": "Conferir se registrei tudo certo",
+      "reuniao": "Preparar reunião ou justificar minhas horas",
+      "planejar": "Planejar a semana",
+      "mostrar": "Mostrar meu trabalho para a liderança",
+      "sem-uso": "Não vejo uso"
     }
   },
   "acesso": {
@@ -220,12 +250,16 @@ function doPost(e) {
     lock.waitLock(10000);
     try {
       const planilha = SpreadsheetApp.getActiveSpreadsheet();
+      const cab = ['recebidoEm', 'codigo'].concat(ORDEM.map(k => COLUNAS[k]), ['minutos', 'dispositivo', 'versao']);
       let aba = planilha.getSheetByName(ABA);
-      if (!aba) {
-        aba = planilha.insertSheet(ABA);
-        aba.appendRow(['recebidoEm', 'codigo'].concat(ORDEM.map(k => COLUNAS[k]), ['minutos', 'dispositivo', 'versao']));
-        aba.setFrozenRows(1);
+      // Se a aba "Respostas" for de uma versão antiga do formulário (colunas diferentes),
+      // as respostas novas vão para "Respostas v2" para não desalinhar as colunas.
+      if (aba && aba.getLastRow() > 0) {
+        const atual = aba.getRange(1, 1, 1, aba.getLastColumn()).getValues()[0].join('|');
+        if (atual !== cab.join('|')) aba = planilha.getSheetByName(ABA + ' v2') || planilha.insertSheet(ABA + ' v2');
       }
+      if (!aba) aba = planilha.insertSheet(ABA);
+      if (aba.getLastRow() === 0) { aba.appendRow(cab); aba.setFrozenRows(1); }
       aba.appendRow([new Date(), texto(d.codigo, 40)].concat(linha, [numero(d.minutos), texto(d.dispositivo, 20), texto(d.versao, 30)]));
     } finally {
       lock.releaseLock();
