@@ -1,0 +1,271 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="robots" content="noindex">
+<title>Escuta Optima Check</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Exo:wght@300;500;600&family=Sora:wght@300;400;600&display=swap">
+<style>
+/* Layout: OPTIMATECH Design System v7 — faixa Graphite no topo com progresso Citrus, coluna única (máx. 680px) em fundo Gelo, perguntas em cards brancos. Tema único claro, como o DS. */
+:root{
+  --ot-citrus:#E6E617; --ot-graphite:#333333; --ot-carbon:#262626; --ot-white:#FFFFFF; --ot-ice:#F1F0F1; --ot-mist:#E3E2E1;
+  --ot-iron:#6B6C6C; --ot-gray:#908F8F; --ot-orange:#E65717; --ot-sand:#F1C360; --ok:#3F8F3A; --focus:#2794A8;
+  --bg:var(--ot-ice); --card:var(--ot-white); --ink:var(--ot-graphite); --ink2:var(--ot-iron); --muted:var(--ot-gray);
+  --line:var(--ot-mist); --line2:#CFCECB; --accent:var(--ot-graphite); --accent-ink:#FFFFFF; --accent-soft:#FBF8DA;
+  --pick:#FAFAE6; --err:#B8430F; --err-soft:#FCEBE3; --ok-soft:#E5F1E4;
+  --display:"Exo",system-ui,sans-serif; --body:"Sora",system-ui,sans-serif;
+  --r-sm:6px; --r-md:8px; --r-lg:13px; --e-1:0 1px 2px rgba(51,51,51,.08); --e-2:0 6px 21px -8px rgba(51,51,51,.22);
+  --t-fast:130ms; --ease-flow:cubic-bezier(.22,.8,.2,1);
+  color-scheme:light;
+}
+*{box-sizing:border-box}
+[hidden]{display:none!important}
+body{margin:0;background:var(--bg);color:var(--ink);font:400 16px/1.6 var(--body);-webkit-font-smoothing:antialiased}
+body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset-top,0px);z-index:10;background:var(--ot-graphite)}
+::selection{background:var(--ot-citrus);color:var(--ot-graphite)}
+.wrap{max-width:680px;margin:0 auto;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));padding-block:0 55px}
+h1,h2,h3{font-family:var(--display);font-weight:500;text-wrap:balance;margin:0;letter-spacing:-.01em;line-height:1.15}
+h1{font-size:clamp(30px,6vw,44px);font-weight:300}
+h1 b{font-weight:600}
+h2{font-size:28px}
+p{margin:0}
+.lead{color:var(--ink2);max-width:62ch}
+.eyebrow{font:600 13px var(--display);letter-spacing:.04em;color:var(--ink2);display:inline-flex;align-items:center;gap:8px}
+.eyebrow::before{content:"";width:8px;height:8px;border-radius:2.8px;background:var(--ot-citrus);box-shadow:0 0 0 1px rgba(51,51,51,.15)}
+button{font:inherit;cursor:pointer}
+:focus-visible{outline:2px solid var(--focus);outline-offset:2px}
+
+/* topo Graphite */
+.top{position:sticky;top:env(safe-area-inset-top,0px);z-index:5;background:var(--ot-graphite);color:#E9E9E6;padding-block:13px 10px}
+.top .row{display:flex;align-items:center;justify-content:space-between;gap:13px}
+.brand{display:flex;align-items:center;gap:8px;font:500 15px var(--display);letter-spacing:.02em;white-space:nowrap}
+.brand i{width:14px;height:14px;border-radius:35%;background:var(--ot-citrus);display:inline-block}
+.brand b{font-weight:600}
+.brand .bsub{color:#A9A9A4;font-weight:400}
+.tabs{display:inline-flex;padding:3px;background:var(--ot-carbon);border-radius:var(--r-md);gap:2px}
+.tabs button{border:0;background:transparent;height:30px;padding:0 12px;border-radius:6px;font-size:13px;color:#BDBDB8}
+.tabs button[aria-pressed="true"]{background:#4A4A48;color:#fff;font-weight:600}
+.prog{display:grid;grid-template-columns:repeat(4,1fr);gap:5px;margin-top:13px}
+.prog span{height:4px;border-radius:2px;background:#4A4A48}
+.prog span.on{background:var(--ot-citrus)}
+.progtxt{display:flex;justify-content:space-between;gap:8px;font-size:12px;color:#A9A9A4;margin-top:6px;font-variant-numeric:tabular-nums}
+
+/* intro */
+.intro{padding-block:34px 0;display:grid;gap:13px}
+.facts{display:flex;flex-wrap:wrap;gap:8px}
+.facts span{display:inline-flex;align-items:center;height:26px;padding:0 10px;border-radius:999px;background:#fff;border:1px solid #D6D5D2;font-size:12.5px;color:var(--ink2)}
+
+/* perguntas */
+.step{display:grid;gap:21px;padding-top:34px}
+.stephead{display:grid;gap:8px}
+.q{display:grid;gap:13px;margin:0;min-width:0;background:var(--card);border:1px solid var(--line);border-radius:var(--r-lg);padding:21px}
+.q legend,.q .ql{float:left;width:100%;font:500 18px/1.3 var(--display);padding:0;margin-bottom:13px}
+.q legend+*{clear:both}
+.q .hint{display:block;font:400 13px/1.5 var(--body);color:var(--muted);margin-top:4px}
+.opts{display:grid;gap:8px;clear:both}
+.opts.two{grid-template-columns:repeat(2,minmax(0,1fr))}
+.opt{position:relative;display:flex;align-items:flex-start;gap:10px;background:#fff;border:1px solid var(--line2);border-radius:var(--r-md);padding:10px 13px;cursor:pointer;min-width:0;font-size:15px;line-height:1.45;transition:border-color var(--t-fast),background var(--t-fast),box-shadow var(--t-fast)}
+.opt:hover{border-color:var(--ink)}
+.opt input{position:absolute;opacity:0;pointer-events:none}
+.opt .mk{flex:none;width:18px;height:18px;margin-top:2px;border:1.5px solid #B9B8B5;background:#fff;display:grid;place-items:center}
+.opt input[type=radio]+.mk{border-radius:50%}
+.opt input[type=checkbox]+.mk{border-radius:5px}
+.opt input:checked+.mk{border-color:var(--ot-graphite);background:var(--ot-citrus)}
+.opt input:checked+.mk::after{content:"";width:6px;height:6px;border-radius:50%;background:var(--ot-graphite)}
+.opt input[type=checkbox]:checked+.mk::after{width:9px;height:5px;border-radius:0;background:none;border-left:2px solid var(--ot-graphite);border-bottom:2px solid var(--ot-graphite);transform:translateY(-1px) rotate(-45deg)}
+.opt:has(input:checked){border-color:var(--ot-graphite);background:var(--pick);box-shadow:inset 0 0 0 1px var(--ot-graphite)}
+.opt:has(input:focus-visible){outline:2px solid var(--focus);outline-offset:2px}
+.opt:has(input:disabled){opacity:.45;cursor:not-allowed}
+.opt .tx{min-width:0}
+.count{font-size:13px;color:var(--ink2);font-variant-numeric:tabular-nums}
+textarea,input[type=text]{width:100%;font:inherit;font-size:15px;color:var(--ink);background:#fff;border:1px solid var(--line2);border-radius:var(--r-md);padding:10px 12px;transition:border-color var(--t-fast),box-shadow var(--t-fast);clear:both}
+textarea{min-height:110px;resize:vertical}
+textarea:focus,input[type=text]:focus{outline:0;border-color:var(--ot-graphite);box-shadow:0 0 0 3px rgba(230,230,23,.55)}
+textarea::placeholder{color:var(--muted)}
+.q.miss{border-color:var(--ot-orange)}
+.q.miss .ql,.q.miss legend{color:var(--err)}
+.qerr{font-size:13px;color:var(--err);background:var(--err-soft);border-radius:var(--r-sm);padding:6px 10px}
+.note{font-size:14px;color:var(--ink2);border-left:3px solid var(--ot-sand);padding:4px 0 4px 14px;max-width:70ch}
+
+.nav{display:flex;gap:10px;justify-content:space-between;align-items:center;padding-top:34px;flex-wrap:wrap}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;height:44px;padding:0 21px;border-radius:var(--r-md);border:1px solid #CFCECB;background:transparent;color:var(--ink);font:500 15px var(--body);white-space:nowrap;transition:transform var(--t-fast),box-shadow var(--t-fast),border-color var(--t-fast)}
+.btn:hover{border-color:var(--ink)}
+.btn:active{transform:translateY(1px)}
+.btn.pri{background:var(--ot-graphite);border-color:var(--ot-graphite);color:#fff}
+.btn.pri:hover{box-shadow:var(--e-2)}
+.btn.pri.last{background:var(--ot-citrus);border-color:var(--ot-citrus);color:var(--ot-graphite);font-weight:600}
+.btn[disabled]{opacity:.6;cursor:progress}
+.btn.ghost{border-color:transparent;color:var(--ink2);padding-inline:6px}
+.ferr{font-size:14px;color:var(--err);flex-basis:100%}
+.done{margin-top:34px;padding:34px 21px;display:grid;gap:13px;justify-items:start;background:var(--card);border:1px solid var(--line);border-radius:var(--r-lg)}
+.done .tick{width:44px;height:44px;border-radius:35%;background:var(--ot-citrus);color:var(--ot-graphite);display:grid;place-items:center}
+.state{margin-top:21px;padding:21px;border:1px dashed var(--line2);border-radius:var(--r-lg);color:var(--ink2);background:#fff}
+
+/* resultados */
+.res{display:grid;gap:13px;padding-top:34px}
+.kpis{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px}
+.kpi{background:var(--card);border:1px solid var(--line);border-radius:var(--r-lg);padding:13px 15px}
+.kpi b{display:block;font:400 34px/1.05 var(--display);font-variant-numeric:tabular-nums}
+.kpi span{font-size:13px;color:var(--ink2)}
+.rbox{background:var(--card);border:1px solid var(--line);border-radius:var(--r-lg);padding:21px;display:grid;gap:10px;min-width:0}
+.rbox h3{font-size:18px}
+.rbox .sub{font-size:13px;color:var(--muted)}
+.bar{display:grid;grid-template-columns:minmax(0,1fr) 70px;gap:4px 10px;align-items:center;font-size:14px}
+.bar .lb{min-width:0}
+.bar .tr{grid-column:1/-1;height:8px;border-radius:3px;background:var(--ot-ice);overflow:hidden;margin-top:-2px}
+.bar .tr i{display:block;height:100%;background:var(--ot-graphite);border-radius:3px}
+.bar:first-of-type .tr i{background:var(--ot-citrus);box-shadow:inset 0 0 0 1px rgba(51,51,51,.25)}
+.bar .vl{text-align:right;font-variant-numeric:tabular-nums;color:var(--ink2);font-size:13px}
+.quotes{display:grid;gap:10px;margin:0;padding:0;list-style:none}
+.quotes li{border-left:3px solid var(--ot-sand);padding:2px 0 2px 13px;font-size:14px;white-space:pre-wrap;overflow-wrap:anywhere}
+.quotes li small{display:block;color:var(--muted);font-size:12px}
+.fil{display:flex;align-items:center;gap:8px;flex-wrap:wrap;font-size:13px;font-weight:500}
+.fil select{font:inherit;font-weight:400;font-size:14px;color:var(--ink);background:#fff;border:1px solid var(--line2);border-radius:var(--r-md);height:38px;padding:0 10px;max-width:100%}
+@media (max-width:520px){.opts.two{grid-template-columns:minmax(0,1fr)}.q{padding:16px}.kpi b{font-size:26px}.bsub{display:none}h2{font-size:24px}}
+@media (max-width:380px){.brand{font-size:13px;gap:6px}.tabs button{font-size:12px;padding:0 7px}}
+@media (prefers-reduced-motion:reduce){*{transition:none!important;scroll-behavior:auto!important}}
+</style>
+</head>
+<body>
+<header class="top"><div class="wrap" style="padding-block:0">
+  <div class="row"><span class="brand"><i aria-hidden="true"></i><span>OPTIMA<b>TECH</b></span><span class="bsub">&nbsp;· Escuta</span></span>
+    </div>
+  <div id="progwrap"><div class="prog" id="prog"><span></span><span></span><span></span><span></span></div>
+  <div class="progtxt"><span id="ptx">Etapa 1 de 4 · Sobre você</span><span id="ptime">cerca de 7 min</span></div></div>
+</div></header>
+
+<main class="wrap" id="app">
+  <section class="intro" id="intro">
+    <span class="eyebrow">Pesquisa com quem faz check-in</span>
+    <h1>O que te ajudaria a <b>registrar e acompanhar</b> seu trabalho?</h1>
+    <p class="lead">Estamos decidindo o que vem depois do check-in diário. Antes de construir qualquer coisa, queremos entender como é o seu dia e o que seria útil de verdade para você. Não existe resposta certa.</p>
+    <div class="facts"><span>4 etapas curtas</span><span>cerca de 7 minutos</span><span>anônimo, sem nome</span></div>
+  </section>
+  <form id="form" novalidate></form>
+  <input type="text" id="hp" name="site" tabindex="-1" autocomplete="off" aria-hidden="true" style="position:absolute;left:-9999px;width:1px;height:1px;opacity:0">
+  </main>
+
+<script>
+const $=s=>document.querySelector(s);
+const esc=s=>String(s??'').replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+
+/* perguntas: type single | multi | text */
+const STEPS=[
+ {t:'Sobre você',d:'Só para separar as respostas por perfil. Não pedimos nome.',q:[
+  {id:'funcao',type:'single',req:true,two:true,l:'Qual é a sua área principal?',o:[['eng-quim','Engenharia química'],['quimica','Química'],['geo','Geociências / Geologia'],['dev','Desenvolvimento (fullstack)'],['design','Design (UX/UI)'],['operacoes','Operações'],['inovacao','Inovação'],['pesquisa','Pesquisa / academia'],['outro','Outra']]},
+  {id:'projetos',type:'single',req:true,two:true,l:'Em quantos projetos você trabalha numa semana comum?',o:[['1','Um só'],['2-3','Dois ou três'],['4+','Quatro ou mais'],['varia','Varia muito']]},
+  {id:'ferramentas',type:'multi',req:true,two:true,l:'Onde você passa a maior parte do seu dia de trabalho?',h:'Marque todas que usa todos os dias.',o:[['chat','Google Chat'],['github','GitHub'],['master','Master (painéis)'],['gmail','Gmail / Agenda'],['sheets','Planilhas'],['outra','Outra ferramenta']]},
+  {id:'aparelho',type:'single',req:true,two:true,l:'Onde você costuma fazer o check-in?',o:[['pc','No computador'],['cel','No celular'],['ambos','Nos dois']]}
+ ]},
+ {t:'Seu dia hoje',d:'Pense nas últimas duas semanas, não no que seria ideal.',q:[
+  {id:'revisita',type:'single',req:true,two:true,l:'Depois de enviar o check-in, você volta a olhar o que registrou?',o:[['nunca','Nunca'],['raro','Raramente'],['as-vezes','Às vezes'],['freq','Com frequência']]},
+  {id:'precisou',type:'multi',req:true,none:'nenhuma',l:'Nas últimas duas semanas, você precisou saber alguma destas coisas?',h:'Marque o que aconteceu de fato.',o:[
+    ['horas-proj','Quantas horas dediquei a um projeto'],['dia','O que fiz num dia específico'],['esqueci','Se esqueci de enviar algum check-in'],['status','Como está o status ou os riscos de um projeto meu'],['quem','Quem mais está no mesmo projeto'],['internas','Quanto do meu tempo foi para atividades internas'],['plano','O que planejei para o dia'],['nenhuma','Nenhuma destas']]},
+  {id:'onde',type:'single',req:true,l:'Da última vez que precisou de uma dessas informações, onde você buscou?',two:true,o:[['chat-pessoal','Meus Check-ins no chat pessoal'],['chat-pmo','Chat-PMO'],['nao-achei','Procurei e não encontrei'],['nao-precisei','Não precisei']]},
+  {id:'historia',type:'text',l:'Conte uma vez em que foi difícil encontrar ou registrar algo sobre o seu trabalho. O que aconteceu?',h:'Opcional. Uma ou duas frases já ajudam muito.',ph:'Ex.: precisei lembrar quanto tempo gastei no projeto X no mês passado e...'}
+ ]},
+ {t:'O que ajudaria',d:'Aqui vale escolher. Se tudo for importante, nada é.',q:[
+  {id:'top3',type:'multi',req:true,max:3,l:'Escolha até 3 coisas que mais ajudariam no seu dia a dia.',o:[
+    ['historico','Ver e corrigir check-ins que já enviei'],['lembrete','Lembrete no horário que eu escolher'],['resumo-semana','Resumo semanal das minhas horas por projeto'],['meta','Ver se estou acima ou abaixo das 8h do dia'],['status-proj','Ver status e riscos dos projetos em que estou'],['carga-time','Ver a carga do time no meu projeto'],['auto','Check-in pré-preenchido com o que fiz no GitHub ou na Agenda'],['exportar','Exportar minhas horas em planilha'],['ao-longo','Registrar ao longo do dia, não só no fim'],['copiar','Começar do check-in de ontem']]},
+  {id:'falta',type:'text',l:'Faltou algo nessa lista que você usaria?',h:'Opcional.'},
+  {id:'desconforto',type:'multi',req:true,none:'nenhum',l:'Alguma destas coisas te deixaria desconfortável?',h:'Queremos evitar construir algo que pareça vigilância.',o:[['ranking','Comparação ou ranking entre pessoas'],['alerta-atraso','Aviso para a gestão quando eu atrasar o check-in'],['publico','Meu check-in visível para todo o time'],['nenhum','Nenhuma destas']]},
+  {id:'frequencia',type:'single',req:true,two:true,l:'Com que frequência você abriria um painel com as suas próprias horas e projetos?',o:[['diario','Todo dia'],['semanal','Uma vez por semana'],['mensal','Uma vez por mês'],['quando','Só quando precisar'],['nunca','Não abriria']]},
+  {id:'acesso',type:'multi',req:true,max:2,two:true,l:'Onde seria mais prático acessar isso?',h:'Até 2 opções.',o:[['chat','No Google Chat'],['master','Na Master'],['celular','Numa página no celular'],['email','Resumo por e-mail']]}
+ ]},
+ {t:'Para fechar',d:'Última etapa.',q:[
+  {id:'mudanca',type:'text',l:'Se você pudesse mudar uma coisa no jeito de registrar e acompanhar o seu trabalho, o que seria?',h:'Opcional.'}
+ ]}
+];
+const QBY={};STEPS.forEach(s=>s.q.forEach(q=>QBY[q.id]=q));
+const A={};let step=0,sent=false,existed=false,started=Date.now();
+
+function qHTML(q){
+  if(q.show&&!q.show(A))return '';
+  const hint=q.h?'<span class="hint">'+esc(q.h)+'</span>':'';
+  if(q.type==='text'){
+    const v=esc(A[q.id]||'');
+    return '<div class="q" id="q-'+q.id+'"><label class="ql" for="i-'+q.id+'">'+esc(q.l)+hint+'</label>'+
+      (q.small?'<input type="text" id="i-'+q.id+'" data-q="'+q.id+'" maxlength="160" value="'+v+'">':'<textarea id="i-'+q.id+'" data-q="'+q.id+'" maxlength="1500" placeholder="'+esc(q.ph||'')+'">'+v+'</textarea>')+'</div>';
+  }
+  const multi=q.type==='multi',cur=multi?(A[q.id]||[]):A[q.id];
+  const full=multi&&q.max&&cur.length>=q.max;
+  const opts=q.o.map(([v,l])=>{const on=multi?cur.includes(v):cur===v;
+    return '<label class="opt"><input type="'+(multi?'checkbox':'radio')+'" name="'+q.id+'" value="'+v+'" data-q="'+q.id+'"'+(on?' checked':'')+(full&&!on?' disabled':'')+'><span class="mk" aria-hidden="true"></span><span class="tx">'+esc(l)+'</span></label>';}).join('');
+  const cnt=multi&&q.max?'<span class="count" aria-live="polite">'+cur.length+' de '+q.max+' escolhidas</span>':'';
+  return '<fieldset class="q" id="q-'+q.id+'"><legend>'+esc(q.l)+hint+'</legend><div class="opts'+(q.two?' two':'')+'">'+opts+'</div>'+cnt+'</fieldset>';
+}
+function render(){
+  const f=$('#form');$('#intro').hidden=step>0||sent;
+  if(sent){f.innerHTML='<section class="done"><span class="tick"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12l5 5 9-10"/></svg></span><h2>Respostas enviadas. Obrigado!</h2><p class="lead">Elas vão ajudar a decidir o que construir primeiro. Se mudar de ideia sobre alguma coisa, dá para revisar e enviar de novo.</p><button type="button" class="btn" id="rev">Revisar minhas respostas</button></section>';
+    $('#progwrap').hidden=true;return;}
+  $('#progwrap').hidden=false;
+  const s=STEPS[step];
+  f.innerHTML='<section class="step"><div class="stephead"><span class="eyebrow">Etapa '+(step+1)+' de '+STEPS.length+'</span><h2>'+esc(s.t)+'</h2><p class="lead">'+esc(s.d)+'</p></div>'+
+    
+    s.q.map(qHTML).join('')+'</section>'+
+    '<div class="nav">'+(step>0?'<button type="button" class="btn ghost" id="back">← Voltar</button>':'<span></span>')+
+    '<button type="submit" class="btn pri'+(step===STEPS.length-1?' last':'')+'" id="next">'+(step===STEPS.length-1?'Enviar respostas':'Continuar')+'</button><p class="ferr" id="ferr" role="alert" hidden></p></div>';
+  [...$('#prog').children].forEach((x,i)=>x.classList.toggle('on',i<=step));
+  $('#ptx').textContent='Etapa '+(step+1)+' de '+STEPS.length+' · '+s.t;
+  $('#ptime').textContent=['cerca de 7 min','cerca de 5 min','cerca de 3 min','menos de 1 min'][step];
+}
+function missing(){
+  return STEPS[step].q.filter(q=>q.req&&(!q.show||q.show(A))&&(q.type==='multi'?!(A[q.id]&&A[q.id].length):!A[q.id]));
+}
+$('#form').addEventListener('change',e=>{
+  const id=e.target.dataset.q;if(!id)return;const q=QBY[id];
+  if(q.type==='single'){A[id]=e.target.value;if(id==='conversa'){const keep=window.scrollY;render();window.scrollTo(0,keep);}}
+  else if(q.type==='multi'){
+    let cur=(A[id]||[]).slice();const v=e.target.value;
+    if(e.target.checked){if(q.none&&v===q.none)cur=[v];else{cur=cur.filter(x=>x!==q.none);cur.push(v);}}
+    else cur=cur.filter(x=>x!==v);
+    A[id]=cur;
+    const el=$('#q-'+id);el.outerHTML=qHTML(q);
+    const box=$('#q-'+id).querySelector('input[value="'+v+'"]');if(box)box.focus({preventScroll:true});
+  }
+  const el=$('#q-'+id);if(el){el.classList.remove('miss');const er=el.querySelector('.qerr');if(er)er.remove();}
+});
+$('#form').addEventListener('input',e=>{const id=e.target.dataset.q;if(id&&QBY[id].type==='text')A[id]=e.target.value;});
+$('#form').addEventListener('click',e=>{
+  if(e.target.id==='back'){step--;render();scrollTo({top:0});}
+  if(e.target.id==='rev'){sent=false;step=0;render();scrollTo({top:0});}
+});
+$('#form').addEventListener('submit',async e=>{
+  e.preventDefault();
+  const miss=missing();
+  if(miss.length){miss.forEach(q=>{const el=$('#q-'+q.id);el.classList.add('miss');if(!el.querySelector('.qerr'))el.insertAdjacentHTML('beforeend','<p class="qerr">'+(q.type==='multi'?'Marque pelo menos uma opção.':'Escolha uma opção.')+'</p>');});
+    $('#q-'+miss[0].id).scrollIntoView({behavior:'smooth',block:'center'});return;}
+  if(step<STEPS.length-1){step++;render();scrollTo({top:0});return;}
+  await send();
+});
+
+/* envio: uma linha por resposta na planilha (Google Apps Script). Nenhum nome é enviado, só um código aleatório. */
+const ENDPOINT='COLE_AQUI_A_URL_DO_APPS_SCRIPT';
+function codigo(){const a='abcdefghjkmnpqrstuvwxyz23456789';let c='';crypto.getRandomValues(new Uint8Array(8)).forEach(x=>c+=a[x%a.length]);return 'r-'+c;}
+let COD=null;try{COD=localStorage.getItem('escuta-codigo');}catch(x){}
+async function send(){
+  const btn=$('#next'),err=$('#ferr');btn.disabled=true;btn.textContent='Enviando…';err.hidden=true;
+  const fail=m=>{err.textContent=m;err.hidden=false;btn.disabled=false;btn.textContent='Enviar respostas';};
+  if(!ENDPOINT||ENDPOINT.indexOf('script.google.com')<0)return fail('O envio ainda não foi configurado. Avise quem te mandou o link.');
+  const r={};Object.keys(QBY).forEach(k=>{const v=A[k];if(v==null||v===''||(Array.isArray(v)&&!v.length))return;r[k]=typeof v==='string'?v.trim().slice(0,1500):v.slice();});
+  if(!COD){COD=codigo();try{localStorage.setItem('escuta-codigo',COD);}catch(x){}}
+  const body=JSON.stringify({codigo:COD,r,minutos:Math.round((Date.now()-started)/6000)/10,dispositivo:matchMedia('(max-width:600px)').matches?'celular':'computador',versao:'escuta-1',hp:($('#hp')||{}).value||''});
+  const ok=()=>{sent=true;render();scrollTo({top:0});};
+  try{
+    const res=await fetch(ENDPOINT,{method:'POST',headers:{'Content-Type':'text/plain;charset=utf-8'},body});
+    const j=await res.json().catch(()=>({ok:true}));
+    if(j.ok===false)return fail(j.error==='invalido'?'Alguma resposta não foi aceita. Volte e confira as etapas.':'Não foi possível enviar agora. Tente de novo em instantes.');
+    ok();
+  }catch(x){
+    try{await fetch(ENDPOINT,{method:'POST',mode:'no-cors',headers:{'Content-Type':'text/plain;charset=utf-8'},body});ok();}
+    catch(y){fail('Não foi possível enviar. Confira sua conexão e tente de novo.');}
+  }
+}
+render();
+</script>
+
+</body>
+</html>
