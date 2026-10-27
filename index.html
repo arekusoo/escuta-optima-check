@@ -243,7 +243,7 @@ $('#form').addEventListener('submit',async e=>{
 });
 
 /* envio: uma linha por resposta na planilha (Google Apps Script). Nenhum nome é enviado, só um código aleatório. */
-const ENDPOINT='COLE_AQUI_A_URL_DO_APPS_SCRIPT';
+const ENDPOINT='https://script.google.com/macros/s/AKfycbyy3r3Z3F9EKOfnyzMq4OlqutfY3MhkiNXX2rZjwmyXp7bqyLKcfVmGAsLV6wHEjbR6rw/exec';
 function codigo(){const a='abcdefghjkmnpqrstuvwxyz23456789';let c='';crypto.getRandomValues(new Uint8Array(8)).forEach(x=>c+=a[x%a.length]);return 'r-'+c;}
 let COD=null;try{COD=localStorage.getItem('escuta-codigo');}catch(x){}
 async function send(){
