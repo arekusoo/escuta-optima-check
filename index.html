@@ -80,6 +80,15 @@ button{font:inherit;cursor:pointer}
 .opt:has(input:focus-visible){outline:2px solid var(--focus);outline-offset:2px}
 .opt:has(input:disabled){opacity:.45;cursor:not-allowed}
 .opt .tx{min-width:0}
+.oth{display:grid;gap:6px;margin-top:4px}
+.oth label{font-size:13px;font-weight:500;color:var(--ink)}
+.files{display:flex;flex-wrap:wrap;gap:10px;align-items:center;clear:both}
+.thumb{position:relative;width:96px;height:96px;border-radius:var(--r-md);overflow:hidden;border:1px solid var(--line2);background:var(--ot-ice)}
+.thumb img{width:100%;height:100%;object-fit:cover;display:block}
+.thumb .rm{position:absolute;top:4px;right:4px;width:26px;height:26px;border-radius:50%;border:0;background:var(--ot-graphite);color:#fff;font-size:16px;line-height:1;display:grid;place-items:center}
+.addf{height:40px;cursor:pointer}
+.sr{position:absolute;width:1px;height:1px;opacity:0;overflow:hidden;pointer-events:none}
+.files:has(.sr:focus-visible) .addf{outline:2px solid var(--focus);outline-offset:2px}
 .count{font-size:13px;color:var(--ink2);font-variant-numeric:tabular-nums}
 textarea,input[type=text]{width:100%;font:inherit;font-size:15px;color:var(--ink);background:#fff;border:1px solid var(--line2);border-radius:var(--r-md);padding:10px 12px;transition:border-color var(--t-fast),box-shadow var(--t-fast);clear:both}
 textarea{min-height:110px;resize:vertical}
@@ -141,7 +150,7 @@ textarea::placeholder{color:var(--muted)}
   <section class="intro" id="intro">
     <span class="eyebrow">Pesquisa com quem faz check-in</span>
     <h1>O que te ajudaria a <b>registrar e acompanhar</b> seu trabalho?</h1>
-    <p class="lead">Estamos decidindo o que vem depois do check-in diário. Antes de construir qualquer coisa, queremos entender como é o seu dia e o que seria útil de verdade para você. Não existe resposta certa.</p>
+    <p class="lead">Estamos decidindo o que vem antes e depois do check-in diário. Antes de construir qualquer coisa, queremos entender como é o seu dia e o que seria útil de verdade para você. Não existe resposta certa.</p>
     <div class="facts"><span>4 etapas curtas</span><span>cerca de 7 minutos</span><span>anônimo, sem nome</span></div>
   </section>
   <form id="form" novalidate></form>
@@ -155,33 +164,37 @@ const esc=s=>String(s??'').replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&g
 /* perguntas: type single | multi | text */
 const STEPS=[
  {t:'Sobre você',d:'Só para separar as respostas por perfil. Não pedimos nome.',q:[
-  {id:'funcao',type:'single',req:true,two:true,l:'Qual é a sua área principal?',o:[['eng-quim','Engenharia química'],['quimica','Química'],['geo','Geociências / Geologia'],['dev','Desenvolvimento (fullstack)'],['design','Design (UX/UI)'],['operacoes','Operações'],['inovacao','Inovação'],['pesquisa','Pesquisa / academia'],['outro','Outra']]},
+  {id:'funcao',type:'single',req:true,two:true,l:'Qual é a sua área principal?',o:[['eng-quim','Engenharia química'],['quimica','Química'],['geo','Geociências / Geologia'],['dev','Desenvolvimento (fullstack)'],['design','Design (UX/UI)'],['operacoes','Operações'],['inovacao','Inovação'],['pesquisa','Pesquisa / academia'],['diretoria','Diretoria'],['outro','Outra']],oth:{v:'outro',l:'Qual área?',req:true}},
   {id:'projetos',type:'single',req:true,two:true,l:'Em quantos projetos você trabalha numa semana comum?',o:[['1','Um só'],['2-3','Dois ou três'],['4+','Quatro ou mais'],['varia','Varia muito']]},
-  {id:'ferramentas',type:'multi',req:true,two:true,l:'Onde você passa a maior parte do seu dia de trabalho?',h:'Marque todas que usa todos os dias.',o:[['chat','Google Chat'],['github','GitHub'],['master','Master (painéis)'],['gmail','Gmail / Agenda'],['sheets','Planilhas'],['outra','Outra ferramenta']]},
+  {id:'comunicacao',type:'multi',req:true,two:true,l:'Qual meio de comunicação você mais usa no trabalho?',h:'Marque todos que usa todos os dias.',o:[['chat','Google Chat'],['email','E-mail'],['meet','Reuniões (Meet)'],['github','GitHub (issues e comentários)'],['whatsapp','WhatsApp'],['outro','Outro']],oth:{v:'outro',l:'Qual?',req:true}},
+  {id:'plataforma',type:'single',req:true,l:'Você preferiria fazer o check-in em outra plataforma, como a Master?',o:[['sim','Sim'],['nao','Não, prefiro no Google Chat'],['tanto-faz','Tanto faz']],oth:{v:'sim',l:'Em qual plataforma? (opcional)',req:false}},
   {id:'aparelho',type:'single',req:true,two:true,l:'Onde você costuma fazer o check-in?',o:[['pc','No computador'],['cel','No celular'],['ambos','Nos dois']]}
  ]},
  {t:'Seu dia hoje',d:'Pense nas últimas duas semanas, não no que seria ideal.',q:[
   {id:'revisita',type:'single',req:true,two:true,l:'Depois de enviar o check-in, você volta a olhar o que registrou?',o:[['nunca','Nunca'],['raro','Raramente'],['as-vezes','Às vezes'],['freq','Com frequência']]},
   {id:'precisou',type:'multi',req:true,none:'nenhuma',l:'Nas últimas duas semanas, você precisou saber alguma destas coisas?',h:'Marque o que aconteceu de fato.',o:[
-    ['horas-proj','Quantas horas dediquei a um projeto'],['dia','O que fiz num dia específico'],['esqueci','Se esqueci de enviar algum check-in'],['status','Como está o status ou os riscos de um projeto meu'],['quem','Quem mais está no mesmo projeto'],['internas','Quanto do meu tempo foi para atividades internas'],['plano','O que planejei para o dia'],['nenhuma','Nenhuma destas']]},
-  {id:'onde',type:'single',req:true,l:'Da última vez que precisou de uma dessas informações, onde você buscou?',two:true,o:[['chat-pessoal','Meus Check-ins no chat pessoal'],['chat-pmo','Chat-PMO'],['nao-achei','Procurei e não encontrei'],['nao-precisei','Não precisei']]},
+    ['horas-proj','Quantas horas dediquei a um projeto'],['dia','O que fiz num dia específico'],['esqueci','Se esqueci de enviar algum check-in'],['status','Como está o status ou os riscos de um projeto meu'],['quem','Quem mais está no mesmo projeto'],['internas','Quanto do meu tempo foi para atividades internas'],['plano','O que planejei para o dia'],['outro','Outra coisa'],['nenhuma','Nenhuma destas']],oth:{v:'outro',l:'O que você precisou saber?',req:true}},
+  {id:'onde',type:'single',req:true,l:'Da última vez que precisou de uma dessas informações, onde você buscou?',two:true,o:[['chat-pessoal','Meus Check-ins no chat pessoal'],['chat-pmo','Chat-PMO'],['nao-achei','Procurei e não encontrei'],['nao-precisei','Não precisei'],['outro','Outro lugar']],oth:{v:'outro',l:'Onde?',req:true}},
   {id:'historia',type:'text',l:'Conte uma vez em que foi difícil encontrar ou registrar algo sobre o seu trabalho. O que aconteceu?',h:'Opcional. Uma ou duas frases já ajudam muito.',ph:'Ex.: precisei lembrar quanto tempo gastei no projeto X no mês passado e...'}
  ]},
  {t:'O que ajudaria',d:'Aqui vale escolher. Se tudo for importante, nada é.',q:[
   {id:'top3',type:'multi',req:true,max:3,l:'Escolha até 3 coisas que mais ajudariam no seu dia a dia.',o:[
-    ['historico','Ver e corrigir check-ins que já enviei'],['lembrete','Lembrete no horário que eu escolher'],['resumo-semana','Resumo semanal das minhas horas por projeto'],['meta','Ver se estou acima ou abaixo das 8h do dia'],['status-proj','Ver status e riscos dos projetos em que estou'],['carga-time','Ver a carga do time no meu projeto'],['auto','Check-in pré-preenchido com o que fiz no GitHub ou na Agenda'],['exportar','Exportar minhas horas em planilha'],['ao-longo','Registrar ao longo do dia, não só no fim'],['copiar','Começar do check-in de ontem']]},
-  {id:'falta',type:'text',l:'Faltou algo nessa lista que você usaria?',h:'Opcional.'},
-  {id:'desconforto',type:'multi',req:true,none:'nenhum',l:'Alguma destas coisas te deixaria desconfortável?',h:'Queremos evitar construir algo que pareça vigilância.',o:[['ranking','Comparação ou ranking entre pessoas'],['alerta-atraso','Aviso para a gestão quando eu atrasar o check-in'],['publico','Meu check-in visível para todo o time'],['pontualidade','Ver a minha pontualidade de check-in registrada'],['nenhum','Nenhuma destas']]},
+    ['historico','Ver e corrigir check-ins que já enviei'],['lembrete','Lembrete no horário que eu escolher'],['resumo-semana','Resumo semanal das minhas horas por projeto'],['meta','Ver se estou acima ou abaixo das 8h do dia'],['status-proj','Ver status e riscos dos projetos em que estou'],['carga-time','Ver a carga do time no meu projeto'],['auto','Check-in pré-preenchido com o que fiz no GitHub ou na Agenda'],['exportar','Exportar minhas horas em planilha'],['ao-longo','Registrar ao longo do dia, não só no fim'],['copiar','Começar do check-in de ontem'],['outro','Outra coisa']],oth:{v:'outro',l:'O que mais ajudaria?',req:true}},
+  {id:'desconforto',type:'multi',req:true,none:'nenhum',l:'Alguma destas coisas te deixaria desconfortável?',h:'Queremos evitar construir algo que pareça vigilância.',o:[['ranking','Comparação ou ranking entre pessoas'],['alerta-atraso','Aviso para a gestão quando eu atrasar o check-in'],['publico','Meu check-in visível para todo o time'],['pontualidade','Ver a minha pontualidade de check-in registrada'],['outro','Outra coisa'],['nenhum','Nenhuma destas']],oth:{v:'outro',l:'O que te deixaria desconfortável?',req:true}},
   {id:'frequencia',type:'single',req:true,two:true,l:'Com que frequência você abriria um painel com as suas próprias horas e projetos?',o:[['diario','Todo dia'],['semanal','Uma vez por semana'],['mensal','Uma vez por mês'],['quando','Só quando precisar'],['nunca','Não abriria']]},
-  {id:'painel_olha',type:'multi',req:true,max:2,none:'nao-usaria',l:'Num painel só seu, o que você olharia primeiro?',h:'Até 2 opções.',o:[['horas-meta','Minhas horas por dia comparadas com as 8h'],['por-projeto','Quanto do meu tempo vai para cada projeto'],['pontualidade','Se enviei o check-in no prazo'],['status','Status e riscos dos meus projetos'],['registro-dia','O que registrei em cada dia'],['nao-usaria','Não usaria um painel']]},
-  {id:'painel_uso',type:'multi',req:true,max:2,none:'sem-uso',l:'Para que você usaria isso?',h:'Até 2 opções.',o:[['conferir','Conferir se registrei tudo certo'],['reuniao','Preparar reunião ou justificar minhas horas'],['planejar','Planejar a semana'],['mostrar','Mostrar meu trabalho para a liderança'],['sem-uso','Não vejo uso']]},
-  {id:'acesso',type:'multi',req:true,max:2,two:true,l:'Onde seria mais prático acessar isso?',h:'Até 2 opções.',o:[['chat','No Google Chat'],['master','Na Master'],['celular','Numa página no celular'],['email','Resumo por e-mail']]}
+  {id:'painel_olha',type:'multi',req:true,max:2,none:'nao-usaria',l:'Num painel só seu, o que você olharia primeiro?',h:'Até 2 opções.',o:[['horas-meta','Minhas horas por dia comparadas com as 8h'],['por-projeto','Quanto do meu tempo vai para cada projeto'],['pontualidade','Se enviei o check-in no prazo'],['status','Status e riscos dos meus projetos'],['registro-dia','O que registrei em cada dia'],['outro','Outra coisa'],['nao-usaria','Não usaria um painel']],oth:{v:'outro',l:'O que você olharia?',req:true}},
+  {id:'painel_uso',type:'multi',req:true,max:2,none:'sem-uso',l:'Para que você usaria isso?',h:'Até 2 opções.',o:[['conferir','Conferir se registrei tudo certo'],['reuniao','Preparar reunião ou justificar minhas horas'],['planejar','Planejar a semana'],['mostrar','Mostrar meu trabalho para a liderança'],['outro','Outro uso'],['sem-uso','Não vejo uso']],oth:{v:'outro',l:'Para quê?',req:true}},
+  {id:'acesso',type:'multi',req:true,max:2,two:true,l:'Onde seria mais prático acessar isso?',h:'Até 2 opções.',o:[['chat','No Google Chat'],['master','Na Master'],['celular','Numa página no celular'],['email','Resumo por e-mail'],['outro','Outro lugar']],oth:{v:'outro',l:'Onde?',req:true}}
  ]},
  {t:'Para fechar',d:'Última etapa.',q:[
-  {id:'mudanca',type:'text',l:'Se você pudesse mudar uma coisa no jeito de registrar e acompanhar o seu trabalho, o que seria?',h:'Opcional.'}
+  {id:'mudanca',type:'text',l:'Se você pudesse mudar uma coisa no jeito de registrar e acompanhar o seu trabalho, o que seria?',h:'Opcional.'},
+  {id:'prints',type:'files',l:'Quer mostrar algo? Envie até 3 imagens.',h:'Opcional. Pode ser um print de uma ferramenta que você gosta, de algo que te atrapalha hoje ou de uma referência com que já trabalhou. Evite prints com nomes ou dados de clientes.'},
+  {id:'prints_sobre',type:'text',show:()=>FILES.length>0,l:'O que essas imagens mostram?',h:'Opcional.'}
  ]}
 ];
-const QBY={};STEPS.forEach(s=>s.q.forEach(q=>QBY[q.id]=q));
+const QBY={};STEPS.forEach(s=>s.q.forEach(q=>{QBY[q.id]=q;if(q.oth)QBY[q.id+'_o']={id:q.id+'_o',type:'text',parent:q}; }));
+const FILES=[];const MAXF=3;
+const isOth=q=>{const c=A[q.id];return !!(q.oth&&(Array.isArray(c)?c.includes(q.oth.v):c===q.oth.v));};
 const A={};let step=0,sent=false,existed=false,started=Date.now();
 
 function qHTML(q){
@@ -192,12 +205,19 @@ function qHTML(q){
     return '<div class="q" id="q-'+q.id+'"><label class="ql" for="i-'+q.id+'">'+esc(q.l)+hint+'</label>'+
       (q.small?'<input type="text" id="i-'+q.id+'" data-q="'+q.id+'" maxlength="160" value="'+v+'">':'<textarea id="i-'+q.id+'" data-q="'+q.id+'" maxlength="1500" placeholder="'+esc(q.ph||'')+'">'+v+'</textarea>')+'</div>';
   }
+  if(q.type==='files'){
+    const th=FILES.map((f,i)=>'<span class="thumb"><img src="'+f.url+'" alt="Imagem '+(i+1)+'"><button type="button" class="rm" data-rm="'+i+'" aria-label="Remover imagem '+(i+1)+'">×</button></span>').join('');
+    return '<fieldset class="q" id="q-'+q.id+'"><legend>'+esc(q.l)+hint+'</legend><div class="files">'+th+
+      (FILES.length<MAXF?'<label class="btn addf" for="i-prints">+ Adicionar imagem</label><input type="file" id="i-prints" accept="image/png,image/jpeg,image/webp" multiple class="sr">':'')+
+      '</div><span class="count">'+FILES.length+' de '+MAXF+' imagens</span><p class="qerr" id="ferr-prints" hidden></p></fieldset>';
+  }
   const multi=q.type==='multi',cur=multi?(A[q.id]||[]):A[q.id];
   const full=multi&&q.max&&cur.length>=q.max;
   const opts=q.o.map(([v,l])=>{const on=multi?cur.includes(v):cur===v;
     return '<label class="opt"><input type="'+(multi?'checkbox':'radio')+'" name="'+q.id+'" value="'+v+'" data-q="'+q.id+'"'+(on?' checked':'')+(full&&!on?' disabled':'')+'><span class="mk" aria-hidden="true"></span><span class="tx">'+esc(l)+'</span></label>';}).join('');
   const cnt=multi&&q.max?'<span class="count" aria-live="polite">'+cur.length+' de '+q.max+' escolhidas</span>':'';
-  return '<fieldset class="q" id="q-'+q.id+'"><legend>'+esc(q.l)+hint+'</legend><div class="opts'+(q.two?' two':'')+'">'+opts+'</div>'+cnt+'</fieldset>';
+  const oth=isOth(q)?'<div class="oth"><label for="i-'+q.id+'_o">'+esc(q.oth.l)+'</label><input type="text" id="i-'+q.id+'_o" data-q="'+q.id+'_o" maxlength="300" value="'+esc(A[q.id+'_o']||'')+'"></div>':'';
+  return '<fieldset class="q" id="q-'+q.id+'"><legend>'+esc(q.l)+hint+'</legend><div class="opts'+(q.two?' two':'')+'">'+opts+'</div>'+oth+cnt+'</fieldset>';
 }
 function render(){
   const f=$('#form');$('#intro').hidden=step>0||sent;
@@ -215,18 +235,25 @@ function render(){
   $('#ptime').textContent=['cerca de 7 min','cerca de 5 min','cerca de 3 min','menos de 1 min'][step];
 }
 function missing(){
-  return STEPS[step].q.filter(q=>q.req&&(!q.show||q.show(A))&&(q.type==='multi'?!(A[q.id]&&A[q.id].length):!A[q.id]));
+  const out=[];
+  STEPS[step].q.forEach(q=>{if(q.show&&!q.show(A))return;
+    if(q.req&&(q.type==='multi'?!(A[q.id]&&A[q.id].length):!A[q.id])){out.push([q,q.type==='multi'?'Marque pelo menos uma opção.':'Escolha uma opção.']);return;}
+    if(q.oth&&q.oth.req&&isOth(q)&&!(A[q.id+'_o']||'').trim())out.push([q,'Escreva qual no campo abaixo da opção.']);});
+  return out;
 }
 $('#form').addEventListener('change',e=>{
+  if(e.target.id==='i-prints'){addFiles(e.target.files);return;}
   const id=e.target.dataset.q;if(!id)return;const q=QBY[id];
-  if(q.type==='single'){A[id]=e.target.value;if(id==='conversa'){const keep=window.scrollY;render();window.scrollTo(0,keep);}}
+  if(q.type==='text')return;
+  if(q.type==='single'){const was=isOth(q);A[id]=e.target.value;
+    if(q.oth&&was!==isOth(q)){const v=e.target.value;$('#q-'+id).outerHTML=qHTML(q);const n=isOth(q)?$('#i-'+id+'_o'):$('#q-'+id).querySelector('input[value="'+v+'"]');if(n)n.focus({preventScroll:true});}}
   else if(q.type==='multi'){
     let cur=(A[id]||[]).slice();const v=e.target.value;
     if(e.target.checked){if(q.none&&v===q.none)cur=[v];else{cur=cur.filter(x=>x!==q.none);cur.push(v);}}
     else cur=cur.filter(x=>x!==v);
     A[id]=cur;
     const el=$('#q-'+id);el.outerHTML=qHTML(q);
-    const box=$('#q-'+id).querySelector('input[value="'+v+'"]');if(box)box.focus({preventScroll:true});
+    const box=(q.oth&&v===q.oth.v&&e.target.checked)?$('#i-'+id+'_o'):$('#q-'+id).querySelector('input[value="'+v+'"]');if(box)box.focus({preventScroll:true});
   }
   const el=$('#q-'+id);if(el){el.classList.remove('miss');const er=el.querySelector('.qerr');if(er)er.remove();}
 });
@@ -234,15 +261,30 @@ $('#form').addEventListener('input',e=>{const id=e.target.dataset.q;if(id&&QBY[i
 $('#form').addEventListener('click',e=>{
   if(e.target.id==='back'){step--;render();scrollTo({top:0});}
   if(e.target.id==='rev'){sent=false;step=0;render();scrollTo({top:0});}
+  const rm=e.target.closest&&e.target.closest('[data-rm]');if(rm){FILES.splice(+rm.dataset.rm,1);refreshFiles();}
 });
 $('#form').addEventListener('submit',async e=>{
   e.preventDefault();
   const miss=missing();
-  if(miss.length){miss.forEach(q=>{const el=$('#q-'+q.id);el.classList.add('miss');if(!el.querySelector('.qerr'))el.insertAdjacentHTML('beforeend','<p class="qerr">'+(q.type==='multi'?'Marque pelo menos uma opção.':'Escolha uma opção.')+'</p>');});
-    $('#q-'+miss[0].id).scrollIntoView({behavior:'smooth',block:'center'});return;}
+  if(miss.length){miss.forEach(([q,m])=>{const el=$('#q-'+q.id);el.classList.add('miss');const old=el.querySelector('.qerr');if(old)old.remove();el.insertAdjacentHTML('beforeend','<p class="qerr">'+m+'</p>');});
+    $('#q-'+miss[0][0].id).scrollIntoView({behavior:'smooth',block:'center'});return;}
   if(step<STEPS.length-1){step++;render();scrollTo({top:0});return;}
   await send();
 });
+
+/* imagens: reduzidas no navegador (até 1600px, JPEG) antes de enviar */
+function refreshFiles(){const q=QBY.prints;$('#q-prints').outerHTML=qHTML(q);const t=$('#q-prints_sobre'),qs=QBY.prints_sobre;
+  if(FILES.length&&!t)$('#q-prints').insertAdjacentHTML('afterend',qHTML(qs));if(!FILES.length&&t)t.remove();}
+function shrink(file){return new Promise((ok,no)=>{const u=URL.createObjectURL(file),im=new Image();
+  im.onload=()=>{const k=Math.min(1,1600/Math.max(im.width,im.height)),c=document.createElement('canvas');c.width=Math.round(im.width*k);c.height=Math.round(im.height*k);
+    const x=c.getContext('2d');x.fillStyle='#fff';x.fillRect(0,0,c.width,c.height);x.drawImage(im,0,0,c.width,c.height);URL.revokeObjectURL(u);ok(c.toDataURL('image/jpeg',.85));};
+  im.onerror=()=>{URL.revokeObjectURL(u);no();};im.src=u;});}
+async function addFiles(list){const er=$('#ferr-prints');let msg='';
+  for(const f of [...list]){if(FILES.length>=MAXF){msg='Você pode enviar até '+MAXF+' imagens.';break;}
+    if(!/^image\/(png|jpeg|webp)$/.test(f.type)){msg='Envie imagens PNG, JPG ou WEBP.';continue;}
+    if(f.size>15*1024*1024){msg='Uma das imagens passa de 15 MB.';continue;}
+    try{const url=await shrink(f);FILES.push({url});}catch(x){msg='Não foi possível ler uma das imagens.';}}
+  refreshFiles();if(msg){const e=$('#ferr-prints');e.textContent=msg;e.hidden=false;}}
 
 /* envio: uma linha por resposta na planilha (Google Apps Script). Nenhum nome é enviado, só um código aleatório. */
 const ENDPOINT='https://script.google.com/macros/s/AKfycbyy3r3Z3F9EKOfnyzMq4OlqutfY3MhkiNXX2rZjwmyXp7bqyLKcfVmGAsLV6wHEjbR6rw/exec';
@@ -252,13 +294,15 @@ async function send(){
   const btn=$('#next'),err=$('#ferr');btn.disabled=true;btn.textContent='Enviando…';err.hidden=true;
   const fail=m=>{err.textContent=m;err.hidden=false;btn.disabled=false;btn.textContent='Enviar respostas';};
   if(!ENDPOINT||ENDPOINT.indexOf('script.google.com')<0)return fail('O envio ainda não foi configurado. Avise quem te mandou o link.');
-  const r={};Object.keys(QBY).forEach(k=>{const v=A[k];if(v==null||v===''||(Array.isArray(v)&&!v.length))return;r[k]=typeof v==='string'?v.trim().slice(0,1500):v.slice();});
+  const r={};Object.keys(QBY).forEach(k=>{const q=QBY[k];if(q.type==='files')return;if(q.parent&&!isOth(q.parent))return;if(q.show&&!q.show(A))return;
+    const v=A[k];if(v==null||v===''||(Array.isArray(v)&&!v.length))return;r[k]=typeof v==='string'?v.trim().slice(0,1500):v.slice();});
   if(!COD){COD=codigo();try{localStorage.setItem('escuta-codigo',COD);}catch(x){}}
-  const body=JSON.stringify({codigo:COD,r,minutos:Math.round((Date.now()-started)/6000)/10,dispositivo:matchMedia('(max-width:600px)').matches?'celular':'computador',versao:'escuta-1',hp:($('#hp')||{}).value||''});
+  const body=JSON.stringify({codigo:COD,r,minutos:Math.round((Date.now()-started)/6000)/10,dispositivo:matchMedia('(max-width:600px)').matches?'celular':'computador',versao:'escuta-2',prints:FILES.map(f=>f.url.split(',')[1]),hp:($('#hp')||{}).value||''});
   const ok=()=>{sent=true;render();scrollTo({top:0});};
   try{
     const res=await fetch(ENDPOINT,{method:'POST',headers:{'Content-Type':'text/plain;charset=utf-8'},body});
     const j=await res.json().catch(()=>({ok:true}));
+    if(j.ok===false&&j.error==='imagem')return fail('Não foi possível salvar as imagens. Tente enviar sem elas ou com menos imagens.');
     if(j.ok===false)return fail(j.error==='invalido'?'Alguma resposta não foi aceita. Volte e confira as etapas.':'Não foi possível enviar agora. Tente de novo em instantes.');
     ok();
   }catch(x){

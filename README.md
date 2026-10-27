@@ -10,7 +10,7 @@ Arquivos:
 ## 1. Planilha e script (Google)
 
 1. Crie uma planilha no Google Drive, por exemplo "Escuta Optima Check".
-2. Na planilha, abra **Extensões → Apps Script**. Apague o conteúdo, cole o arquivo `Code.gs` e salve.
+2. Na planilha, abra **Extensões → Apps Script**. Apague o conteúdo, cole o arquivo `Code.gs` e salve. Escolha a função `autorizar` e clique em **Executar** para liberar o acesso à planilha e ao Drive (pasta das imagens).
 3. Clique em **Implantar → Nova implantação** e, em "Selecionar tipo", escolha **App da Web**.
    - Executar como: **Eu**
    - Quem pode acessar: **Qualquer pessoa**
@@ -48,5 +48,9 @@ Troque o texto entre aspas pelo endereço copiado no passo 1.5.
 - Cada envio vira uma linha. Nas perguntas de múltipla escolha, as opções vêm separadas por `;`.
 - O `codigo` é aleatório e fica guardado no navegador da pessoa. Se ela revisar e enviar de novo, aparece uma linha nova com o **mesmo código**: considere só a mais recente de cada código.
 - `minutos` é o tempo entre abrir a página e enviar.
+- Colunas terminadas em `_outro` guardam o texto que a pessoa escreveu ao marcar "Outro" (ou "Sim", na pergunta sobre outra plataforma).
+- `imagens` traz os links das imagens enviadas. Os arquivos ficam na pasta "Escuta OptimaCheck - imagens" do seu Drive, visíveis só para você.
+- Quando as perguntas mudam, as respostas novas vão para uma aba nova ("Respostas v2", "v3"...), para não desalinhar as colunas antigas.
+- Para reaplicar a formatação, rode `formatarRespostas` no Apps Script.
 
 Se alterar o `Code.gs` depois de implantar, vá em **Implantar → Gerenciar implantações → editar → Nova versão** para a mudança valer no mesmo endereço.
